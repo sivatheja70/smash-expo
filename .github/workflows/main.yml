@@ -1,4 +1,4 @@
-name: Expo CI CD
+name: Expo CI-CD
 
 on:
 #   push :
@@ -20,10 +20,10 @@ jobs:
       #     architecture: x64 # (x64 or x86) - defaults to x64
       - uses: expo/expo-github-action@v5
         with:
-          eas-version: latest
+          expo-version: latest
         #   expo-username: ${{ secrets.EXPO_CLI_USERNAME }}
         #   expo-password: ${{ secrets.EXPO_CLI_PASSWORD }}
-          token: ${{ secrets.EXPO_TOKEN }}
+          expo-token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install deps
         run: yarn install
