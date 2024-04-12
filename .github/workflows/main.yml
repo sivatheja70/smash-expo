@@ -1,4 +1,4 @@
-name: Expo CI-CD
+name: Expo feature-1
 
 on:
   workflow_dispatch:
