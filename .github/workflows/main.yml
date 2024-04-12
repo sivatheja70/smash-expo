@@ -28,8 +28,8 @@ jobs:
       - name: Install deps
         run: yarn install
       - name: Build Android APK Bundle
-        # run: expo build:android 
-        run: eas build --platform android  --profile production
+        run: expo build:android --profile production
+        # run: eas build --platform android  --profile production
 
   # Build-for-IOS:
   #     runs-on: macos-latest
