@@ -12,8 +12,8 @@
         "distribution": "internal",
         "buildType": "apk",
         "env": {
-         "distribution": "internal"
-       }
+          "APP_NAME":"TEST"
+         }
       }
     },
     "production": {}
