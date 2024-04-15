@@ -6,7 +6,7 @@ export default ({ config }): ExpoConfig => ({
   ...config,
   name: process.env.APP_NAME,
 
-  owner: "smash"
+  owner: "sivatheja"
 }
  
 );
