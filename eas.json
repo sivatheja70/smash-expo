@@ -8,9 +8,13 @@
       "distribution": "internal"
     },
     "feature-2": {
-       "env": {
+      "android": {
+        "distribution": "internal",
+        "buildType": "apk",
+        "env": {
          "distribution": "internal"
        }
+      }
     },
     "production": {}
   },
