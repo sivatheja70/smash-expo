@@ -8,7 +8,9 @@
       "distribution": "internal"
     },
     "feature-2": {
-      "distribution": "internal"
+       "env": {
+         "distribution": "internal"
+       }
     },
     "production": {}
   },
