@@ -59,7 +59,7 @@ jobs:
 
     - name: Build Android app
       # run: eas build --platform android --profile ${{ steps.determine_profile.outputs.profile }} --local --output ${{ github.workspace }}/app-release.apk
-      run: eas build --platform android --profile ${{ env.PROFILE }} --non-interactive --no-wait
+      run: eas build --platform android --profile ${{ env.PROFILE }} --interactive --no-wait
 
 
     - name: Upload APK artifact
