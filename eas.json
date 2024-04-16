@@ -10,7 +10,7 @@
     "feature-2": {
       "android": {
         "distribution": "internal",
-        "buildType": "apk",
+        "buildType": "aab",
         "env": {
           "APP_NAME":"TEST",
           "APP_SLUG":"smash"
