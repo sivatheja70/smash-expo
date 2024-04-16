@@ -9,6 +9,7 @@
     },
     "feature-2": {
       "android": {
+        "image": "latest"
         "distribution": "internal",
         "buildType": "apk",
         "env": {
