@@ -1,0 +1,108 @@
+name: Code Quality Check
+
+# on:
+#   pull_request:
+#     branches:
+#       - main
+on:
+  push:
+    branches:
+      - feature-*
+      - sandbox
+      - dev
+      - stage
+      - main
+  pull_request:
+    types: [opened, edited, reopened]
+
+jobs:
+  # if_merged:
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #     - run: |
+  #         echo A PR was merged into the main branch.
+          
+    audit-deps:
+      runs-on: ubuntu-latest
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+     
+      steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4.0.2
+        with:
+          node-version: "18"
+
+      - name: Audit Dependencies
+        id: audit_dependencies
+        run: npm audit --production --audit-level=moderate
+        
+    unit-test:
+      runs-on: ubuntu-latest
+      needs: [audit-deps]
+      # env:
+      #   INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4.0.2
+        with:
+          node-version: "18.x"
+
+      - name: Installing Dependencies
+        run: npm ci
+
+      - name: Unit Test
+        id: test_unit
+        run: npm test
+
+    lint-code:
+      runs-on: ubuntu-latest
+      needs: [audit-deps]
+      # env:
+      #   INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4.0.2
+        with:
+          node-version: "18"
+
+      - name: Installing Dependencies
+        run: npm ci
+
+      - name: Lint Source
+        id: lint_source
+        run: npm run lint
+
+    
+    
+      # - name: Report status to GitHub
+      #   if: always()
+      #   uses: actions/github-script@v5
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     script: |
+      #       const { context, GitHub } = require('@actions/github');
+      #       const github = new GitHub(process.env.GITHUB_TOKEN);
+
+      #       const checkResults = {
+      #         'Unit Test': ${{ job.status == 'success' ? 'success' : 'failure' }},
+      #         'Lint Source': ${{ steps.Lint Source.outcome == 'success' ? 'success' : 'failure' }},
+      #         'Audit Dependencies': ${{ steps.Audit Dependencies.outcome == 'success' ? 'success' : 'failure' }}
+      #       };
+
+      #       for (const [checkName, status] of Object.entries(checkResults)) {
+      #         await github.repos.createStatus({
+      #           ...context.repo,
+      #           sha: context.sha,
+      #           state: status,
+      #           target_url: `URL_TO_WORKFLOW_RUN`,
+      #           description: `${checkName} ${status === 'success' ? 'passed' : 'failed'}`,
+      #           context: checkName
+      #         });
+      #       }
