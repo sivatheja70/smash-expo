@@ -11,7 +11,7 @@
       "android": {
         "image": "latest",
         "distribution": "internal",
-        "buildType": "apk"
+        "buildType": "apk",
         "env": {
           "APP_NAME":"TEST",
           "APP_SLUG":"smash"
