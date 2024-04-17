@@ -5,15 +5,16 @@ name: Code Quality Check
 #     branches:
 #       - main
 on:
-  push:
-    branches:
-      # - feature-*
-      - sandbox
-      - dev
-      - stage
-      - main
-  pull_request:
-    types: [opened, edited, reopened]
+  # push:
+  #   branches:
+  #     # - feature-*
+  #     - sandbox
+  #     - dev
+  #     - stage
+  #     - main
+  # pull_request:
+  #   types: [opened, edited, reopened]
+  workflow_call:
 
 jobs:
   # if_merged:
