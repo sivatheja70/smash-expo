@@ -1,14 +1,14 @@
 on:
-  # push:
-  #    branches:
-  #     - feature-*
-  #     - sandbox
-  #     - dev
-  #     - stage
-  #     - main
-  # pull_request:
-  #   types:
-  #     - closed
+  push:
+     branches:
+      - feature-*
+      - sandbox
+      - dev
+      - stage
+      - main
+  pull_request:
+    types:
+      - closed
   workflow_dispatch:
 # env:
 #   expo_auth: ${{ secrets.EXPO_TOKEN }}
