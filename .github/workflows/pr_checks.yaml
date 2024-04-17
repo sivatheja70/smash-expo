@@ -1,109 +1,98 @@
 name: Code Quality Check
 
-# on:
-#   pull_request:
-#     branches:
-#       - main
 on:
-  # push:
-  #   branches:
-  #     # - feature-*
-  #     - sandbox
-  #     - dev
-  #     - stage
-  #     - main
-  # pull_request:
-  #   types: [opened, edited, reopened]
-  workflow_call:
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
-  # if_merged:
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #     - run: |
-  #         echo A PR was merged into the main branch.
-          
-    audit-deps:
-      runs-on: ubuntu-latest
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  audit-deps:
+    runs-on: ubuntu-latest
      
-      steps:
-      - uses: actions/checkout@v4
+    steps:
+    - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4.0.2
-        with:
-          node-version: "18"
+    - uses: actions/setup-node@v4.0.2
+      with:
+        node-version: "18"
 
-      - name: Audit Dependencies
-        id: audit_dependencies
-        run: npm audit --production --audit-level=moderate
-        
-    unit-test:
-      runs-on: ubuntu-latest
-      needs: [audit-deps]
-      # env:
-      #   INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4.0.2
-        with:
-          node-version: "18.x"
+    - name: Audit Dependencies
+      id: audit_dependencies
+      run: npm audit --production --audit-level=moderate
 
-      - name: Installing Dependencies
-        run: npm ci
+    - name: Set Audit Status
+      if: always()
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.repos.createStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.sha,
+            state: '${{ job.status }}',
+            description: 'Audit Dependencies',
+            context: 'Audit Dependencies'
+          })
 
-      - name: Unit Test
-        id: test_unit
-        run: npm test
+  unit-test:
+    runs-on: ubuntu-latest
+    needs: [audit-deps]
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4.0.2
+      with:
+        node-version: "18.x"
 
-    lint-code:
-      runs-on: ubuntu-latest
-      needs: [audit-deps]
-      # env:
-      #   INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      steps:
-      - uses: actions/checkout@v4
+    - name: Installing Dependencies
+      run: npm ci
 
-      - uses: actions/setup-node@v4.0.2
-        with:
-          node-version: "18"
+    - name: Unit Test
+      id: test_unit
+      run: npm test
 
-      - name: Installing Dependencies
-        run: npm ci
+    - name: Set Unit Test Status
+      if: always()
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.repos.createStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.sha,
+            state: '${{ job.status }}',
+            description: 'Unit Test',
+            context: 'Unit Test'
+          })
 
-      - name: Lint Source
-        id: lint_source
-        run: npm run lint
+  lint-code:
+    runs-on: ubuntu-latest
+    needs: [audit-deps]
+    steps:
+    - uses: actions/checkout@v4
 
-    
-    
-      # - name: Report status to GitHub
-      #   if: always()
-      #   uses: actions/github-script@v5
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     script: |
-      #       const { context, GitHub } = require('@actions/github');
-      #       const github = new GitHub(process.env.GITHUB_TOKEN);
+    - uses: actions/setup-node@v4.0.2
+      with:
+        node-version: "18"
 
-      #       const checkResults = {
-      #         'Unit Test': ${{ job.status == 'success' ? 'success' : 'failure' }},
-      #         'Lint Source': ${{ steps.Lint Source.outcome == 'success' ? 'success' : 'failure' }},
-      #         'Audit Dependencies': ${{ steps.Audit Dependencies.outcome == 'success' ? 'success' : 'failure' }}
-      #       };
+    - name: Installing Dependencies
+      run: npm ci
 
-      #       for (const [checkName, status] of Object.entries(checkResults)) {
-      #         await github.repos.createStatus({
-      #           ...context.repo,
-      #           sha: context.sha,
-      #           state: status,
-      #           target_url: `URL_TO_WORKFLOW_RUN`,
-      #           description: `${checkName} ${status === 'success' ? 'passed' : 'failed'}`,
-      #           context: checkName
-      #         });
-      #       }
+    - name: Lint Source
+      id: lint_source
+      run: npm run lint
+
+    - name: Set Lint Status
+      if: always()
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.repos.createStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.sha,
+            state: '${{ job.status }}',
+            description: 'Lint Source',
+            context: 'Lint Source'
+          })
