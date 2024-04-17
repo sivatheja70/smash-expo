@@ -23,16 +23,36 @@ jobs:
       if: always()
       uses: actions/github-script@v5
       with:
-        github-token: ${{ secrets.GIT_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          github.repos.createStatus({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            sha: context.sha,
-            state: '${{ job.status }}',
-            description: 'Audit Dependencies',
-            context: 'Audit Dependencies'
-          })
+           try {
+             console.log('Context:', context); // Log the context object  
+             github.repos.createStatus({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             sha: context.sha,
+             state: 'failure',
+             description: 'Audit Dependencies',
+             context: 'Audit Dependencies'
+            });
+           } catch (error) {
+            console.error('Error setting audit status:', error);
+           }
+
+    # - name: Set Audit Status
+    #   if: always()
+    #   uses: actions/github-script@v5
+    #   with:
+    #     github-token: ${{ secrets.GIT_TOKEN }}
+    #     script: |
+    #       github.repos.createStatus({
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         sha: context.sha,
+    #         state: '${{ job.status }}',
+    #         description: 'Audit Dependencies',
+    #         context: 'Audit Dependencies'
+    #       })
 
   unit-test:
     runs-on: ubuntu-latest
