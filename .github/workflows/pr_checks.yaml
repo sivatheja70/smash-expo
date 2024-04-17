@@ -23,7 +23,7 @@ jobs:
       if: always()
       uses: actions/github-script@v5
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GIT_TOKEN }}
         script: |
           github.repos.createStatus({
             owner: context.repo.owner,
@@ -54,7 +54,7 @@ jobs:
       if: always()
       uses: actions/github-script@v5
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GIT_TOKEN }}
         script: |
           github.repos.createStatus({
             owner: context.repo.owner,
@@ -86,7 +86,7 @@ jobs:
       if: always()
       uses: actions/github-script@v5
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GIT_TOKEN }}
         script: |
           github.repos.createStatus({
             owner: context.repo.owner,
