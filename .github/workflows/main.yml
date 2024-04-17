@@ -37,6 +37,11 @@ jobs:
           
     # - name: Setup Android SDK
     #   uses: android-actions/setup-android@v3
+    - name: Run Analysis
+      run: npx eslint --ext .js,.jsx,.ts,.tsx src/
+
+    - name: Run tests
+      run: npm test
 
     - name: Setup Expo
       uses: expo/expo-github-action@v8
