@@ -3,11 +3,7 @@ name: CI/CD Workflow
 on:
   pull_request:
     types: [closed]
-    branches:
-      - sandbox
-      - dev
-      - stage
-      - main
+    branches: [sandbox, dev, stage, main]
   push:
     branches:
       - feature-*
@@ -19,15 +15,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  if_closed_pr: 
-    runs-on: ubuntu-latest
-    # if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    if: github.event.pull_request.merged == true
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.1.2
-      - run: |
-          echo A PR was closed.
+  # if_closed_pr: 
+  #   runs-on: ubuntu-latest
+  #   # if: github.event_name == 'pull_request' && github.event.action == 'closed'
+  #   if: github.event.pull_request.merged == true
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4.1.2
+  #     - run: |
+  #         echo A PR was closed.
 
   Build-for-android:
     runs-on: ubuntu-latest
