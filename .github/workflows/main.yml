@@ -12,16 +12,27 @@ name: CI/CD Workflow
 #       # - stage
 #       # - main
 
+# on:
+#   push:
+#     branches:
+#       - feature-*
+#       - sandbox
+#       - dev
+#       - stage
+#       - main
+#   pull_request:
+#     types: [closed]
 on:
   push:
     branches:
       - feature-*
+  pull_request:
+    types: [closed]
+    branches:  
       - sandbox
       - dev
       - stage
       - main
-  pull_request:
-    types: [closed]
 
   workflow_dispatch:
 
