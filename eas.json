@@ -19,7 +19,7 @@
       }
     },
 
-    "sandbox": {
+    "dev": {
       "android": {
         "image": "latest",
         "distribution": "internal",
