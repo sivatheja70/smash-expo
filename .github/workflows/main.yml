@@ -1,20 +1,41 @@
 name: CI/CD Workflow
 
+# on:
+#   pull_request:
+#     types: [closed]
+#     branches: [sandbox, dev, stage, main]
+#   push:
+#     branches:
+#       - feature-*
+#       # - sandbox
+#       # - dev
+#       # - stage
+#       # - main
+
 on:
-  pull_request:
-    types: [closed]
-    branches: [sandbox, dev, stage, main]
   push:
     branches:
       - feature-*
-      # - sandbox
-      # - dev
-      # - stage
-      # - main
-  
+      - sandbox
+      - dev
+      - stage
+      - main
+  pull_request:
+    types: [closed]
+
   workflow_dispatch:
 
 jobs:
+  if_merged:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/sandbox' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/stage' || github.ref == 'refs/heads/main')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: |
+          echo A PR was merged into the main branch.
+
+# jobs:
   # if_closed_pr: 
   #   runs-on: ubuntu-latest
   #   # if: github.event_name == 'pull_request' && github.event.action == 'closed'
