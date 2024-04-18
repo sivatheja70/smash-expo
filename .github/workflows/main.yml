@@ -11,15 +11,18 @@ on:
   push:
     branches:
       - feature-*
-      - sandbox
-      - dev
-      - stage
-      - main
+      # - sandbox
+      # - dev
+      # - stage
+      # - main
+  
+  workflow_dispatch:
 
 jobs:
   if_closed_pr: 
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    # if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.2
@@ -28,7 +31,7 @@ jobs:
 
   Build-for-android:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    # if: github.event_name == 'push'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.2
@@ -70,7 +73,7 @@ jobs:
         
   Build-for-IOS:
     runs-on: macos-latest
-    if: github.event_name == 'push'
+    # if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
