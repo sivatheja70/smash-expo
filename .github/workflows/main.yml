@@ -1,108 +1,104 @@
+name: CI/CD Workflow
+
 on:
+  pull_request:
+    types: [closed]
+    branches:
+      - sandbox
+      - dev
+      - stage
+      - main
   push:
-     branches:
+    branches:
       - feature-*
       - sandbox
       - dev
       - stage
       - main
-  pull_request:
-    types:
-      - closed
-  workflow_dispatch:
-# env:
-#   expo_auth: ${{ secrets.EXPO_TOKEN }}
+
 jobs:
-  if_merged: 
+  if_closed_pr: 
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.2
       - run: |
-          echo A PR was merged into the main branch.
+          echo A PR was closed.
 
   Build-for-android:
     runs-on: ubuntu-latest
-
+    if: github.event_name == 'push'
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.1.2
+      - name: Checkout code
+        uses: actions/checkout@v4.1.2
 
-    - name: Setup node
-      uses: actions/setup-node@v4.0.2
-      with:
+      - name: Setup node
+        uses: actions/setup-node@v4.0.2
+        with:
           node-version: 18.x
           cache: 'npm'
-          
-    # - name: Setup Android SDK
-    #   uses: android-actions/setup-android@v3
-    - name: Run Analysis
-      run: npx eslint --ext .js,.jsx,.ts,.tsx src/
+      
+      - name: Run Analysis
+        run: npx eslint --ext .js,.jsx,.ts,.tsx src/
 
-    - name: Run tests
-      run: npm test
+      - name: Run tests
+        run: npm test
 
-    - name: Setup Expo
-      uses: expo/expo-github-action@v8
-      with:
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
           expo-version: latest
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    # - name: Determine EAS Profile
-    #   id: determine_profile
-    #   run: echo "::set-output name=profile::$(echo $GITHUB_REF | cut -d'/' -f3)"
+      - name: Determine EAS Profile
+        id: determine_profile
+        run: echo "PROFILE=$(echo $GITHUB_REF | cut -d'/' -f3)" >> $GITHUB_ENV
 
-    - name: Determine EAS Profile
-      id: determine_profile
-      run: echo "PROFILE=$(echo $GITHUB_REF | cut -d'/' -f3)" >> $GITHUB_ENV
+      - name: Build Android app
+        run: eas build --platform android --profile ${{ env.PROFILE }} --non-interactive --no-wait
 
-
-    - name: Build Android app
-      # run: eas build --platform android --profile ${{ steps.determine_profile.outputs.profile }} --local --output ${{ github.workspace }}/app-release.apk
-      run: eas build --platform android --profile ${{ env.PROFILE }} --non-interactive --no-wait
-
-
-    - name: Upload APK artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: app-release
-        path: ${{ github.workspace }}/app-release.apk
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release
+          path: ${{ github.workspace }}/app-release.apk
         
   Build-for-IOS:
-      runs-on: macos-latest
-      steps:
-        - uses: actions/checkout@v4
-        - uses: actions/setup-node@v4
-          with:
-            node-version: 18.x
-            
-        - uses: sinoru/actions-setup-xcode@v2
-          with:
-            xcode-version: latest
-            apple-id: ${{ secrets.EXPO_APPLE_ID }} # Apple ID to download from Apple Developer when Xcode not available in local
-            apple-id-password: ${{ secrets.EXPO_APPLE_PASSWORD }}
-            
-        - name: Setup Expo
-          uses: expo/expo-github-action@v8
-          with:
-            expo-version: latest
-            eas-version: latest
-            token: ${{ secrets.EXPO_TOKEN }}
+    runs-on: macos-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
           
-        - name: Install dependencies
-          run: npm ci
+      - uses: sinoru/actions-setup-xcode@v2
+        with:
+          xcode-version: latest
+          apple-id: ${{ secrets.EXPO_APPLE_ID }} # Apple ID to download from Apple Developer when Xcode not available in local
+          apple-id-password: ${{ secrets.EXPO_APPLE_PASSWORD }}
 
-        - name: Determine EAS Profile
-          id: determine_profile
-          run: echo "PROFILE=$(echo $GITHUB_REF | cut -d'/' -f3)" >> $GITHUB_ENV
-          
-        - name: Build iOS app
-          run: eas build --platform ios --profile ${{ env.PROFILE }} --non-interactive --no-wait
-          env:
-              EXPO_APPLE_ID: ${{secrets.EXPO_APPLE_ID}}
-              EXPO_APPLE_ID_PASSWORD: ${{secrets.EXPO_APPLE_PASSWORD}}    
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine EAS Profile
+        id: determine_profile
+        run: echo "PROFILE=$(echo $GITHUB_REF | cut -d'/' -f3)" >> $GITHUB_ENV
+
+      - name: Build iOS app
+        run: eas build --platform ios --profile ${{ env.PROFILE }} --non-interactive --no-wait
+        env:
+            EXPO_APPLE_ID: ${{secrets.EXPO_APPLE_ID}}
+            EXPO_APPLE_ID_PASSWORD: ${{secrets.EXPO_APPLE_PASSWORD}}
