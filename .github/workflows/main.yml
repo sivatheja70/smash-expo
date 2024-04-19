@@ -1,16 +1,16 @@
 name: CI/CD Workflow
 
-# on:
-#   pull_request:
-#     types: [closed]
-#     branches: [sandbox, dev, stage, main]
-#   push:
-#     branches:
-#       - feature-*
-#       # - sandbox
-#       # - dev
-#       # - stage
-#       # - main
+on:
+  pull_request:
+    types: [closed]
+    branches: [sandbox, dev, stage, main]
+  push:
+    branches:
+      - feature-*
+      # - sandbox
+      # - dev
+      # - stage
+      # - main
 
 # on:
 #   push:
@@ -22,12 +22,12 @@ name: CI/CD Workflow
 #       - main
 #   pull_request:
 #     types: [closed]
-on:
-  push:
-    branches:
-      - feature-*
-  pull_request:
-    types: [closed]
+# on:
+#   push:
+#     branches:
+#       - feature-*
+#   pull_request:
+#     types: [closed]
 
   workflow_dispatch:
 
@@ -81,18 +81,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Determine EAS Profile
-        id: determine_profile
-        run: echo "PROFILE=$(echo $GITHUB_REF | cut -d'/' -f3)" >> $GITHUB_ENV
 
-      - name: Build Android app
-        run: eas build --platform android --profile ${{ env.PROFILE }} --non-interactive --no-wait
-
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: app-release
-          path: ${{ github.workspace }}/app-release.apk
         
   Build-for-IOS:
     runs-on: macos-latest
@@ -103,28 +92,7 @@ jobs:
         with:
           node-version: 18.x
           
-      - uses: sinoru/actions-setup-xcode@v2
-        with:
-          xcode-version: latest
-          apple-id: ${{ secrets.EXPO_APPLE_ID }} # Apple ID to download from Apple Developer when Xcode not available in local
-          apple-id-password: ${{ secrets.EXPO_APPLE_PASSWORD }}
-
-      - name: Setup Expo
-        uses: expo/expo-github-action@v8
-        with:
-          expo-version: latest
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Determine EAS Profile
-        id: determine_profile
-        run: echo "PROFILE=$(echo $GITHUB_REF | cut -d'/' -f3)" >> $GITHUB_ENV
-
-      - name: Build iOS app
-        run: eas build --platform ios --profile ${{ env.PROFILE }} --non-interactive --no-wait
-        env:
-            EXPO_APPLE_ID: ${{secrets.EXPO_APPLE_ID}}
-            EXPO_APPLE_ID_PASSWORD: ${{secrets.EXPO_APPLE_PASSWORD}}
