@@ -1,12 +1,12 @@
 name: CI/CD Workflow
 
 on:
-  pull_request:
+  pull_request_target:
     types: [closed]
     branches: [sandbox, dev, stage, main]
-  # push:
-  #   branches:
-  #     - feature-*
+  push:
+    branches:
+      - feature-*
   #     - sandbox
   #     - dev
   #     - stage
