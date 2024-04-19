@@ -7,10 +7,10 @@ on:
   push:
     branches:
       - feature-*
-      # - sandbox
-      # - dev
-      # - stage
-      # - main
+      - sandbox
+      - dev
+      - stage
+      - main
 
 # on:
 #   push:
