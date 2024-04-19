@@ -4,13 +4,13 @@ on:
   pull_request:
     types: [closed]
     branches: [sandbox, dev, stage, main]
-  push:
-    branches:
-      - feature-*
-      - sandbox
-      - dev
-      - stage
-      - main
+  # push:
+  #   branches:
+  #     - feature-*
+  #     - sandbox
+  #     - dev
+  #     - stage
+  #     - main
 
 # on:
 #   push:
