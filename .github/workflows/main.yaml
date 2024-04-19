@@ -1,0 +1,88 @@
+name: CI/CD Workflow
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [sandbox, dev, stage, main]
+  # push:
+  #   branches:
+  #     - feature-*
+  #     - sandbox
+  #     - dev
+  #     - stage
+  #     - main
+
+# on:
+#   push:
+#     branches:
+#       - feature-*
+#       - sandbox
+#       - dev
+#       - stage
+#       - main
+#   pull_request:
+#     types: [closed]
+# on:
+#   push:
+#     branches:
+#       - feature-*
+#   pull_request:
+#     types: [closed]
+
+  workflow_dispatch:
+
+jobs:
+  if_merged:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    # if: github.event_name == 'push' && (github.ref == 'refs/heads/sandbox' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/stage' || github.ref == 'refs/heads/main')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: |
+          echo A PR was merged into the main branch.
+
+# jobs:
+  # if_closed_pr: 
+  #   runs-on: ubuntu-latest
+  #   # if: github.event_name == 'pull_request' && github.event.action == 'closed'
+  #   if: github.event.pull_request.merged == true
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4.1.2
+  #     - run: |
+  #         echo A PR was closed.
+
+  Build-for-android:
+    runs-on: ubuntu-latest
+    # if: github.event_name == 'push'
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.2
+
+      - name: Setup node
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+
+        
+  Build-for-IOS:
+    runs-on: macos-latest
+    # if: github.event_name == 'push'
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          
+
+      - name: Install dependencies
+        run: npm ci
+
