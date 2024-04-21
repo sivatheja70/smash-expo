@@ -1,8 +1,8 @@
 name: feature Workflow
 
 on:
-  push:
-    branches: [feature-*]
+  # push:
+  #   branches: [feature-*]
 
   workflow_dispatch:
   
@@ -27,6 +27,7 @@ jobs:
         
   Build-for-IOS:
     runs-on: macos-latest
+    if: github.ref=='refs/heads/feature-*'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
