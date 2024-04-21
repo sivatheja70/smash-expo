@@ -9,30 +9,12 @@ on:
       - stage
       - main
 
-# on:
-#   push:
-#     branches:
-#       - feature-*
-#       - sandbox
-#       - dev
-#       - stage
-#       - main
-#   pull_request:
-#     types: [closed]
-# on:
-#   push:
-#     branches:
-#       - feature-*
-#   pull_request:
-#     types: [closed]
-
   workflow_dispatch:
 
 jobs:
   if_merged:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
-    # if: github.event_name == 'push' && (github.ref == 'refs/heads/sandbox' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/stage' || github.ref == 'refs/heads/main')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/sandbox' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/stage' || github.ref == 'refs/heads/main')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
