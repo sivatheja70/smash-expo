@@ -70,20 +70,20 @@ jobs:
     #   id: test_unit
     #   run: npm test
 
-    - name: Set Unit Test Status
-      if: always()
-      uses: actions/github-script@v5
-      with:
-        github-token: ${{ secrets.GIT_TOKEN }}
-        script: |
-          github.repos.createStatus({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            sha: context.sha,
-            state: '${{ job.status }}',
-            description: 'Unit Test',
-            context: 'Unit Test'
-          })
+    # - name: Set Unit Test Status
+    #   if: always()
+    #   uses: actions/github-script@v5
+    #   with:
+    #     github-token: ${{ secrets.GIT_TOKEN }}
+    #     script: |
+    #       github.repos.createStatus({
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         sha: context.sha,
+    #         state: '${{ job.status }}',
+    #         description: 'Unit Test',
+    #         context: 'Unit Test'
+    #       })
 
   lint-code:
     runs-on: ubuntu-latest
@@ -102,17 +102,17 @@ jobs:
     #   id: lint_source
     #   run: npm run lint
 
-    - name: Set Lint Status
-      if: always()
-      uses: actions/github-script@v5
-      with:
-        github-token: ${{ secrets.GIT_TOKEN }}
-        script: |
-          github.repos.createStatus({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            sha: context.sha,
-            state: '${{ job.status }}',
-            description: 'Lint Source',
-            context: 'Lint Source'
-          })
+    # - name: Set Lint Status
+    #   if: always()
+    #   uses: actions/github-script@v5
+    #   with:
+    #     github-token: ${{ secrets.GIT_TOKEN }}
+    #     script: |
+    #       github.repos.createStatus({
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         sha: context.sha,
+    #         state: '${{ job.status }}',
+    #         description: 'Lint Source',
+    #         context: 'Lint Source'
+    #       })
