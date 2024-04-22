@@ -66,9 +66,9 @@ jobs:
     - name: Installing Dependencies
       run: npm install
 
-    # - name: Unit Test
-    #   id: test_unit
-    #   run: npm test
+    - name: Unit Test
+      id: test_unit
+      run: npm test
 
     # - name: Set Unit Test Status
     #   if: always()
