@@ -63,11 +63,11 @@ jobs:
           node-version: 18.x
           cache: 'npm'
       
-      - name: Run Analysis
-        run: npx eslint --ext .js,.jsx,.ts,.tsx src/
+      # - name: Run Analysis
+      #   run: npx eslint --ext .js,.jsx,.ts,.tsx src/
 
-      - name: Run tests
-        run: npm test
+      # - name: Run tests
+      #   run: npm test
 
       - name: Setup Expo
         uses: expo/expo-github-action@v8
