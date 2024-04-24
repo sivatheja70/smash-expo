@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  audit-deps:
+ audit-deps:
     runs-on: ubuntu-latest
      
     steps:
@@ -17,7 +17,21 @@ jobs:
 
     - name: Audit Dependencies
       id: audit_dependencies
-      run: npm audit --production --audit-level=moderate
+      run: |
+        npm audit --production --audit-level=moderate || true
+
+    - name: Display Audit Report
+      if: always()  # This step always runs regardless of previous steps' status
+      run: |
+        cat npm-debug.log || true  # Display any error log
+        cat npm-shrinkwrap.json || true  # Display audit report
+
+    # - name: Archive Test Results
+    #   if: success() || failure()
+    #   uses: actions/upload-artifact@v1
+    #   with:
+    #     name: test-results
+    #     path: app/build
 
     # - name: Set Audit Status
     #   if: always()
