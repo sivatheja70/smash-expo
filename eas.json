@@ -13,7 +13,7 @@
         "distribution": "internal",
         "buildType": "apk",
         "env": {
-          "APP_NAME":"TEST",
+          "APP_NAME":"smash",
           "APP_SLUG":"smash"
          }
       }
