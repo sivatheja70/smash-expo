@@ -47,6 +47,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run long-running command
+        run: |
+           # Perform some task that needs to take more than a minute
+           echo "Performing time-consuming task..."
+        
+           # Introduce a sleep command to consume time
+           sleep 120  # Sleep for 2 minutes
+        
+           echo "Task completed."
+
 
         
   Build-for-IOS:
